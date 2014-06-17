@@ -1,0 +1,27 @@
+{
+  "name": "arraymethods",
+  "version": "0.0.0",
+  "description": "convenience methods for arrays",
+  "main": "./lib/arraymethods",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "./node_modules/.bin/nodeunit test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/uplake/arraymethods.git"
+  },
+  "keywords": [
+    "array"
+  ],
+  "dependencies": {
+    "nodeunit": "~0.8.2",
+    "articles": "~0.2.1"
+  },
+  "author": "Chad Kirby",
+  "license": "MIT",
+  "readmeFilename": "README.md",
+  "gitHead": "1f812eccf0100552625afce5d01dc40602f91b67"
+}

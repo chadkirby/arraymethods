@@ -12,6 +12,16 @@ first = (me) -> me[0]
 sortBy = (me, property) ->
    me.sort (a,b) -> a[property] - b[property]
 
+findBy = (me, properties = {}) ->
+  for item in me
+    match = yes
+    for key, val of properties when item[key] isnt val
+      match = no
+      break
+    return item if match
+
+  return null
+
 clump = (me, n=2) -> for j in [0...me.length] by n
    for i in [0...n] when (i+j) < me.length
       me[i+j] 
@@ -22,6 +32,9 @@ normalize = (me) ->
       sum += num
    for num, i in me
       me[i] /= sum
+
+wrapAt = (me, index) ->
+  me[index % me.length]
 
 {defineProperty} = Object
 unless defineProperty?
@@ -35,10 +48,12 @@ module.exports = {
    last
    listString
    sortBy
+   findBy
    unique
    clump
    normalize
    any
+   wrapAt
    pollute: ->
       for name, fn of module.exports when name isnt 'pollute'
         do(fn) ->
@@ -58,3 +73,9 @@ if require.main is module
    console.log [1,2,3].normalize()
    console.log [1,2,3].last()
    console.log ['apple', 'Apple'].unique (item) -> item.toUpperCase()
+   console.log [
+      name: "Fred"
+      ID: 1
+    ,
+      name: "Joe"
+   ].findBy ID: 1

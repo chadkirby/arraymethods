@@ -2,20 +2,24 @@
   every
   any
   unique
+  isNumber
 } = require './utils'
 
-listString = require './listString'
+{listCoffeeArrStr, listString} = require './listString'
 
 last = (me) -> me[me.length-1]
 first = (me) -> me[0]
 
 sortBy = (me, property) ->
-   me.sort (a,b) -> a[property] - b[property]
+   if (every me, isNumber)
+      me.sort (a,b) -> a[property] - b[property]
+   else
+      me.sort (a,b) -> a[property].localeCompare b[property]
 
 findBy = (me, properties = {}) ->
   for item in me
     match = yes
-    for key, val of properties when item[key] isnt val
+    for own key, val of properties when item[key] isnt val
       match = no
       break
     return item if match
@@ -47,6 +51,7 @@ unless defineProperty?
 module.exports = {
    last
    listString
+   listCoffeeArrStr
    sortBy
    findBy
    unique
@@ -55,7 +60,7 @@ module.exports = {
    any
    wrapAt
    pollute: ->
-      for name, fn of module.exports when name isnt 'pollute'
+      for own name, fn of module.exports when name isnt 'pollute'
         do(fn) ->
           descriptor = { 
              enumerable: no 

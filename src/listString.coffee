@@ -2,14 +2,10 @@
   every
   any
   unique
+  isInt
 } = require './utils'
 
 Articles = require 'Articles'
-
-isNumber = (n) -> !isNaN(parseFloat(n)) && isFinite(n)
-isInt = (value) ->
-   not isNaN(parseInt(value, 10)) and (parseFloat(value, 10) is parseInt(value, 10))
-
 
 listString = (me, andor, article, comma = ', ') ->
    isRange = not andor?
@@ -47,20 +43,27 @@ listString = (me, andor, article, comma = ', ') ->
    arr.push "#{andor} #{arr.pop()}" if andOrProvided and (arr.length > 2)
    arr.join delimiter
 
+listCoffeeArrStr = (me) ->
+   arr = consolidateRanges(me, '..')
+   if arr.length > 1 and any(arr, (item) -> /\d\.\.\d/.test(item))
+      "[].concat.call([#{arr.join '], ['}])"
+   else
+      "[#{arr.join ', '}]"
+
 consolidateRanges = (inputArray, delimiter = '–') ->
     arr = unique(inputArray).sort (a,b) -> a-b
     rangeEnds = []
     rangeBegs = []
     for num, i in arr
-         rangeBegs.push(num) unless num is arr[i-1]+1
-         rangeEnds.push(num) unless num is arr[i+1]-1
+      rangeBegs.push(num) unless num is arr[i-1]+1
+      rangeEnds.push(num) unless num is arr[i+1]-1
 
     for start, i in rangeBegs
-         end = rangeEnds[i]
-         if start is end
-             start
-         else
-             "#{start}#{delimiter}#{end}"
+      end = rangeEnds[i]
+      if start is end
+          start
+      else
+          "#{start}#{delimiter}#{end}"
 
 consolidateAlphaRanges = (inputArray, delimiter = '–') ->
     arr = unique(inputArray).sort()
@@ -77,9 +80,13 @@ consolidateAlphaRanges = (inputArray, delimiter = '–') ->
          else
              "#{start}#{delimiter}#{end}"
 
-module.exports = listString
+module.exports = {listString, listCoffeeArrStr}
 
 if require.main is module
    exec = require('child_process').exec
    exec 'cake build', (error, stdout, stderr) -> 
       console.log {error, stdout, stderr}
+
+   console.log listCoffeeArrStr [1,2,3,4]
+   console.log listCoffeeArrStr [1,2,3,4, 11, 21, 22, 23]
+   console.log listCoffeeArrStr [1,3,5]

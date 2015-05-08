@@ -19,4 +19,9 @@ module.exports = {
       else
          out[val] = val for val in me
       value for key, value of out
+
+   isNumber: (n) -> !isNaN(parseFloat(n)) && isFinite(n)
+
+   isInt: (value) ->
+      not isNaN(parseInt(value, 10)) and (parseFloat(value, 10) is parseInt(value, 10))
 }

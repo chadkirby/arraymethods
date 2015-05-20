@@ -17,6 +17,7 @@
     "array"
   ],
   "dependencies": {
+    "Articles": "git://github.com/chadkirby/Articles",
     "nodeunit": "~0.8.2",
     "articles": "~0.2.1"
   },

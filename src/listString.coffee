@@ -5,7 +5,7 @@
   isInt
 } = require './utils'
 
-Articles = require 'Articles'
+Articles = require 'articles'
 
 listString = (me, andor, article, comma = ', ') ->
    isRange = not andor?

@@ -11,10 +11,13 @@ last = (me) -> me[me.length-1]
 first = (me) -> me[0]
 
 sortBy = (me, property) ->
-   if (every me, isNumber)
-      me.sort (a,b) -> a[property] - b[property]
-   else
-      me.sort (a,b) -> a[property].localeCompare b[property]
+    me.sort (a,b) ->
+        a = a[property]
+        b = b[property]
+        if a.localeCompare?
+            a.localeCompare b
+        else
+            a - b
 
 findBy = (me, properties = {}) ->
   for item in me
@@ -28,9 +31,9 @@ findBy = (me, properties = {}) ->
 
 clump = (me, n=2) -> for j in [0...me.length] by n
    for i in [0...n] when (i+j) < me.length
-      me[i+j] 
+      me[i+j]
 
-normalize = (me) -> 
+normalize = (me) ->
    sum = 0
    for num in me # much faster than [].reduce
       sum += num
@@ -62,8 +65,8 @@ module.exports = {
    pollute: ->
       for own name, fn of module.exports when name isnt 'pollute'
         do(fn) ->
-          descriptor = { 
-             enumerable: no 
+          descriptor = {
+             enumerable: no
              value: (args...) -> fn.apply(null, [this].concat(args))
           }
           defineProperty Array::, name, descriptor unless Array::[name]?
@@ -71,16 +74,16 @@ module.exports = {
 
 if require.main is module
    exec = require('child_process').exec
-   exec 'cake build', (error, stdout, stderr) -> 
+   exec 'cake build', (error, stdout, stderr) ->
       console.log {error, stdout, stderr}
    module.exports.pollute()
-   console.log [1,2,3].listString()
-   console.log [1,2,3].normalize()
-   console.log [1,2,3].last()
-   console.log ['apple', 'Apple'].unique (item) -> item.toUpperCase()
-   console.log [
-      name: "Fred"
-      ID: 1
-    ,
-      name: "Joe"
-   ].findBy ID: 1
+   arr = [
+       {a: 1},
+       {a: 0}
+   ]
+   console.log sortBy(arr, 'a')
+   arr = [
+       {a: 'b'},
+       {a: 'a'}
+   ]
+   console.log sortBy(arr, 'a')
